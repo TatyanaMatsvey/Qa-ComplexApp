@@ -32,12 +32,11 @@ class TestStartPage:
         # Verify message
         assert message.text == "Error"
 
+    @staticmethod
     def random_num(self):
         """Generate random number"""
         return str(random.choice(range(11111, 99999)))
 
-    # Создать тест (поглядывая на имеющийся) который проверяет ошибку при логине с инвалидным паролем и логином.
-    # (Проверка таже, добавляется только заполнение полей)
     def test_invalid_login(self):
         """
         - Create driver
