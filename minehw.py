@@ -30,7 +30,7 @@ class TestStartPage:
         assert message.text == "Error"
 
     def test_valid_username(self):
-        '''Positive test with valid username and valid pass'''
+        '''positive test with valid username and valid pass'''
 
         driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
