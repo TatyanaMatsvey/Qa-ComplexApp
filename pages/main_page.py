@@ -13,7 +13,7 @@ class MainPage(BasePage):
         self.constants = MainPageConstants()
         self.log = logging.getLogger(__name__)
 
-    def verify_success_login(self):
+    def verify_logout_button(self):
         """Verify sign out button"""
         logout_button = self.driver.find_element(by=By.XPATH, value=self.constants.LOGOUT_BUTTON_XPATH)
         logout_button.click()
