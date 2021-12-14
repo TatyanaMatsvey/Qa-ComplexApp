@@ -2,16 +2,23 @@
 import random
 from time import sleep
 
+import pytest
 from selenium.webdriver.chrome import webdriver
 from selenium.webdriver.common.by import By
 
 
 class TestStartPage:
 
-    def test_start_page(self):
-        """Sample test"""
-        # создать драйвер
+    @pytest.fixture(scope="function")
+    def driver(self):
+        """Create and return driver, close after test"""
         driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
+        yield driver
+        driver.close()
+
+    def test_start_page(self, driver):
+        """Sample test"""
+
         # откыть страницу
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         # найти кнопку Sign in
@@ -32,12 +39,11 @@ class TestStartPage:
         # Verify message
         assert message.text == "Error"
 
-    @staticmethod
     def random_num(self):
         """Generate random number"""
         return str(random.choice(range(11111, 99999)))
 
-    def test_invalid_login(self):
+    def test_invalid_login(self, driver):
         """
         - Create driver
         - Open start page
@@ -48,8 +54,7 @@ class TestStartPage:
         - Click on Sign In button
         - Verify error message
         """
-        # Create driver
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
+
         # Open start page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         # Find and clean Username field
