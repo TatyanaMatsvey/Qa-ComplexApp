@@ -15,6 +15,7 @@ class TestStartPage:
     @pytest.fixture(scope="function")
     def driver(self):
         driver = webdriver.WebDriver(BaseConstants.DRIVER_PATH)
+        # driver.implicitly_wait(5)
         yield driver
         driver.close()
 
