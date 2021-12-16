@@ -15,6 +15,6 @@ class MainPage(BasePage):
 
     def verify_logout_button(self):
         """Verify sign out button"""
-        logout_button = self.driver.find_element(by=By.XPATH, value=self.constants.LOGOUT_BUTTON_XPATH)
+        logout_button = self.wait_until_element_enabled(value=self.constants.LOGOUT_BUTTON_XPATH)
         logout_button.click()
         return MainPage
