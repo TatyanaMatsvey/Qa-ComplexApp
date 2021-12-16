@@ -1,125 +1,59 @@
-import random
 from time import sleep
 
+import pytest
 from selenium.webdriver.chrome import webdriver
 from selenium.webdriver.common.by import By
+
+from constants import start_page
+from constants.base import BaseConstants
+from pages.main_page import MainPage
+from pages.start_page import StartPage
 
 
 class TestStartPage:
 
-    def random_num(self):
-        """Generate random number"""
-        return str(random.choice(range(11111, 99999)))
+    @pytest.fixture(scope="function")
+    def driver(self):
+        driver = webdriver.WebDriver(BaseConstants.DRIVER_PATH)
+        yield driver
+        driver.close()
 
-    # 1 Валидация поля Username
-    def test_invalid_username(self):
-        '''Test invalid username and invalid password'''
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        username = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Username']")
-        username.clear()
-        username.send_keys(f"userName{self.random_num()}")
-        sleep(3)
-        password = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Password']")
-        password.clear()
-        password.send_keys(f"Pwd{self.random_num()}")
-        sleep(3)
-        button = driver.find_element(by=By.XPATH, value=".//button[text()='Sign In']")
-        button.click()
-        message = driver.find_element(by=By.XPATH, value=".//div[@class='alert alert-danger text-center']")
-        assert message.text == "Error"
+    @pytest.fixture(scope="function")
+    def start_page(self, driver):
+        """Return start page object"""
+        driver.get(BaseConstants.URL)
+        return StartPage(driver)
 
-    def test_valid_username(self):
-        '''positive test with valid username and valid pass'''
+    @pytest.fixture(scope="function")
+    def main_page(self, driver):
+        """Return start page object"""
+        driver.get(BaseConstants.URL)
+        return MainPage(driver)
 
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        username = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Username']")
-        username.clear()
-        username.send_keys("tatyanam")
-        sleep(3)
-        password = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Password']")
-        password.clear()
-        password.send_keys("1234567890qwerty")
-        sleep(3)
-        button = driver.find_element(by=By.XPATH, value=".//button[text()='Sign In']")
-        button.click()
-        logout = driver.find_element(by=By.XPATH, value=".//html/body/header/div/div/form/button")
+    # 1 Валидация login
+    def test_invalid_username(self, start_page):
+        """Test invalid username and invalid password"""
+        start_page.login("qqq11", "11w2")
 
-    def test_comby_1(self):
-        '''Test invalid username and valid password'''
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        username = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Username']")
-        username.clear()
-        username.send_keys(f"userName{self.random_num()}")
-        sleep(3)
-        password = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Password']")
-        password.clear()
-        password.send_keys("1234567890qwerty")
-        sleep(3)
-        button = driver.find_element(by=By.XPATH, value=".//button[text()='Sign In']")
-        button.click()
-        message = driver.find_element(by=By.XPATH, value=".//div[@class='alert alert-danger text-center']")
-        assert message.text == "Error"
-
-    def test_comby_2(self):
-        '''Test valid username and invalid password'''
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        username = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Username']")
-        username.clear()
-        username.send_keys("tatyanam")
-        sleep(3)
-        password = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Password']")
-        password.clear()
-        password.send_keys(f"Pwd{self.random_num()}")
-        sleep(3)
-        button = driver.find_element(by=By.XPATH, value=".//button[text()='Sign In']")
-        button.click()
-        message = driver.find_element(by=By.XPATH, value=".//div[@class='alert alert-danger text-center']")
-        assert message.text == "Error"
+    def test_valid_username(self, start_page, main_page):
+        """Positive test with valid username and valid pass"""
+        start_page.login("tatyanam", "1234567890qwerty")
+        main_page.verify_logout_button()
 
     # 2 Наличие Placeholder в поле Password
-    def test_placeholder(self):
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        placeholder = driver.find_element(by=By.XPATH,
-                                          value=".//input[@name='password' and @class='form-control form-control-sm input-dark']")
-        sleep(3)
+    def test_placeholder(self, start_page):
+        start_page.placeholder()
 
-    # 3 Кликабельность кнопки Sign in - $x(".//button[@class='btn btn-primary btn-sm']")
-    def test_sign_in(self):
-        '''Positive test with valid username and valid pass'''
+    # 3 Кликабельность кнопки Sign in
+    def test_sign_in(self, start_page, main_page):
+        """Positive test with valid username and valid pass"""
+        start_page.login("tatyanam", "1234567890qwerty")
+        main_page.verify_logout_button()
 
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        username = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Username']")
-        username.clear()
-        username.send_keys("tatyanam")
-        sleep(3)
-        password = driver.find_element(by=By.XPATH, value=".//input[@placeholder='Password']")
-        password.clear()
-        password.send_keys("1234567890qwerty")
-        sleep(3)
-        button = driver.find_element(by=By.XPATH, value=".//button[text()='Sign In']")
-        button.click()
-        logout = driver.find_element(by=By.XPATH, value=".//html/body/header/div/div/form/button")
-
-        # 4 Работоспособность рефки
-
-    def test_link(self):
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        link = driver.find_element(by=By.XPATH, value=".//a[@href='/'and @class='text-white']")
-        link.click()
-        sleep(3)
-
-        # 5 Наличие h1 на странице
-
-    def test_h1(self):
-        driver = webdriver.WebDriver(executable_path="./drivers/chromedriver")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        h1 = driver.find_element(by=By.XPATH, value=".//H1")
-        # тут хочу сравнить текст найденного h1 с значением на стартовой странице, что бы было Тру, но не знаю как
-        sleep(3)
+    # 4 Работоспособность рефки на странице авторизации/регистрации
+    def test_link(self, start_page):
+        start_page.test_link()
+        
+    # 5 Наличие h1 на странице авторизации/регистрации
+    def test_h1(self, start_page):
+        start_page.h1_on_page()
