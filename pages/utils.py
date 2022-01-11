@@ -11,6 +11,7 @@ def wait_until_ok(timeout=5, period=0.25):
 
         def wrapper(*args, **kwargs):
             end_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
+
             while True:
                 try:
                     return original_function(*args, **kwargs)
@@ -19,6 +20,8 @@ def wait_until_ok(timeout=5, period=0.25):
                         logger.warning(f"Catch: {err}")
                         raise err
                     sleep(period)
+
+
 
         return wrapper
 
@@ -40,3 +43,4 @@ def log_decorator(orig_func):
 def random_num():
     """Generate random number"""
     return str(random.choice(range(11111, 99999)))
+

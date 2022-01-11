@@ -3,6 +3,7 @@ import random
 from selenium.webdriver.common.by import By
 from constants.start_page import StartPageConstants
 from pages.base import BasePage
+
 from pages.main_page import MainPage
 from pages.utils import log_decorator
 
@@ -34,6 +35,7 @@ class StartPage(BasePage):
         # Find error message
         message = self.wait_until_element_enabled(value=self.constants.SIGN_IN_ERROR_MESSAGE_XPATH)
         # Verify message
+        message = self.wait_until_find_element(value=self.constants.SIGN_IN_ERROR_MESSAGE_XPATH)
         assert message.text == self.constants.SIGN_IN_ERROR_MESSAGE_TEXT
         return self
 
@@ -52,3 +54,9 @@ class StartPage(BasePage):
         """Link in start page is displayed"""
         placeholder = self.wait_until_find_element(value=self.constants.SIGN_IN_PLACEHOLDER_XPATH)
         placeholder.is_displayed()
+
+    @wait_until_ok()
+    def _click_on_sign_up_button(self):
+        """Click on button until it disappear"""
+        self.wait_until_element_enabled(value=self.constants.SIGN_IN_BUTTON_XPATH).click()
+        self.wait_until_element_disappear(value=self.constants.SIGN_IN_BUTTON_XPATH)
