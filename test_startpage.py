@@ -37,7 +37,7 @@ class TestStartPage:
 
     def test_valid_username(self, start_page, main_page):
         """Positive test with valid username and valid pass"""
-        start_page.login("tatyanam", "1234567890qwerty")
+        start_page.login("TatyanaMa", "TatyanaMaTatyanaMa")
         main_page.verify_logout_button()
 
     # 2 Наличие Placeholder в поле Password
@@ -47,13 +47,13 @@ class TestStartPage:
     # 3 Кликабельность кнопки Sign in
     def test_sign_in(self, start_page, main_page):
         """Positive test with valid username and valid pass"""
-        start_page.login("tatyanam", "1234567890qwerty")
+        start_page.login("TatyanaMa", "TatyanaMaTatyanaMa")
         main_page.verify_logout_button()
 
     # 4 Работоспособность рефки на странице авторизации/регистрации
     def test_link(self, start_page):
         start_page.test_link()
-        
+
     # 5 Наличие h1 на странице авторизации/регистрации
     def test_h1(self, start_page):
         start_page.h1_on_page()

@@ -1,9 +1,10 @@
 import logging
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
-from selenium.webdriver.support.wait import WebDriverWait
 
 
 class BasePage:
@@ -15,20 +16,24 @@ class BasePage:
 
     def fill_field(self, locator, value, by=By.XPATH):
         """Fill field using provided variables"""
-        username = self.wait_until_find_element(by=by, value=locator)
+        field = self.wait_until_element_enabled(by=by, value=locator)
+        field.clear()
+        field.send_keys(value)
 
-        username.clear()
-        username.send_keys(value)
+    def is_element_exists(self, value, by=By.XPATH):
+        """Return True if element could be find otherwise False"""
+        try:
+            self.wait_until_find_element(by=by, value=value)
+            return True
+        except TimeoutException:
+            return False
 
     def wait_until_find_element(self, value, by=By.XPATH):
         """Wait until find element"""
-        return self.wait.until(EC.presence_of_element_located(locator=(by, value)))
+        return self.wait.until(EC.visibility_of_element_located(locator=(by, value)))
 
     def wait_until_element_enabled(self, value, by=By.XPATH):
         """Wait until element enabled"""
         element = self.wait_until_find_element(by=by, value=value)
         return self.wait.until(EC.element_to_be_clickable(element))
 
-    def wait_until_element_disappear(self, value, by=By.XPATH):
-        """Wait until element is not visible anymore"""
-        self.wait.until_not(EC.visibility_of_element_located(locator=(by, value)))
